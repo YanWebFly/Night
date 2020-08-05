@@ -187,7 +187,23 @@ if ($cmd == "/dev create room") {
     $new_room_seven->seeker = NULL;
     R::store($new_room_seven);
     $vk->sendMessage($id, "%fn% комнаты созданы!");
-    
+    exit();
+}
+
+//Настройка
+if ($cmd == "/dev setting up") {
+    $new_setting_up_one = R::dispense("roomsettings");
+    $new_setting_up_one->room_id = 1;
+    $new_setting_up_one->ready = yes;
+    $new_setting_up_one->uiid = NULL;
+    $new_setting_up_one->owner = NULL;
+    R::store($new_setting_up_one);
+    $new_setting_up_two = R::dispense("roomsettings");
+    $new_setting_up_two->room_id = 1;
+    $new_setting_up_two->ready = yes;
+    $new_setting_up_two->uiid = NULL;
+    $new_setting_up_two->owner = NULL;
+    R::store($new_setting_up_two);
 }
 
 //кнопки
