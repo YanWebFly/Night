@@ -221,13 +221,13 @@ if ($cmd == "/dev setting up") {
     $new_setting_up_five->ready = yes;
     $new_setting_up_five->uiid = NULL;
     $new_setting_up_five->owner = NULL;
-    R::store($new_setting_up_six);
+    R::store($new_setting_up_five);
     $new_setting_up_six = R::dispense("roomsettings");
     $new_setting_up_six->room_id = 6;
     $new_setting_up_six->ready = yes;
     $new_setting_up_six->uiid = NULL;
     $new_setting_up_six->owner = NULL;
-    R::store($new_setting_up_seven);
+    R::store($new_setting_up_six);
     $new_setting_up_seven = R::dispense("roomsettings");
     $new_setting_up_seven->room_id = 7;
     $new_setting_up_seven->ready = yes;
