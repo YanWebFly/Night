@@ -272,7 +272,7 @@ if ($payload == "create_game") {
  
     $gen = gen_password(10);
     $password = "$id-$gen";
-        $room->uuid = $password
+        $room->uuid = $password;
         R::store($room);
         $info_done = R::findOne("roomsettings", "uuid = ?", [$password]);
         $room_idf = $info_done->room_id;
