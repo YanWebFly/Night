@@ -250,8 +250,8 @@ if ($cmd == "начать") {
     $vk->sendButton($id, "Вот список кнопок...", [[$cgame],[$crgame],[$profile, $shop],[$return]]);
 }
 
-if (isset($data->object->payload)) {
-        $payload = json_decode($data->object->payload, True);
+if (isset($data->object->message->payload)) {
+        $payload = json_decode($data->object->message->payload, True);
     } else {
         $payload = null;
     }
