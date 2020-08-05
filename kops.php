@@ -199,12 +199,44 @@ if ($cmd == "/dev setting up") {
     $new_setting_up_one->owner = NULL;
     R::store($new_setting_up_one);
     $new_setting_up_two = R::dispense("roomsettings");
-    $new_setting_up_two->room_id = 1;
+    $new_setting_up_two->room_id = 2;
     $new_setting_up_two->ready = yes;
     $new_setting_up_two->uiid = NULL;
     $new_setting_up_two->owner = NULL;
     R::store($new_setting_up_two);
+    $new_setting_up_three = R::dispense("roomsettings");
+    $new_setting_up_three->room_id = 3;
+    $new_setting_up_three->ready = yes;
+    $new_setting_up_three->uiid = NULL;
+    $new_setting_up_three->owner = NULL;
+    R::store($new_setting_up_three);
+    $new_setting_up_four = R::dispense("roomsettings");
+    $new_setting_up_four->room_id = 4;
+    $new_setting_up_four->ready = yes;
+    $new_setting_up_four->uiid = NULL;
+    $new_setting_up_four->owner = NULL;
+    R::store($new_setting_up_four);
+    $new_setting_up_five = R::dispense("roomsettings");
+    $new_setting_up_five->room_id = 5;
+    $new_setting_up_five->ready = yes;
+    $new_setting_up_five->uiid = NULL;
+    $new_setting_up_five->owner = NULL;
+    R::store($new_setting_up_six);
+    $new_setting_up_six = R::dispense("roomsettings");
+    $new_setting_up_six->room_id = 6;
+    $new_setting_up_six->ready = yes;
+    $new_setting_up_six->uiid = NULL;
+    $new_setting_up_six->owner = NULL;
+    R::store($new_setting_up_seven);
+    $new_setting_up_seven = R::dispense("roomsettings");
+    $new_setting_up_seven->room_id = 7;
+    $new_setting_up_seven->ready = yes;
+    $new_setting_up_seven->uiid = NULL;
+    $new_setting_up_seven->owner = NULL;
+    R::store($new_setting_up_seven);
+    $vk->sendMessage($id, "%fn% комнаты настроены!");
 }
+
 
 //кнопки
 $cgame = $vk->buttonText("&#11088; Создать игру", "green", ['command' => 'create_game']);
