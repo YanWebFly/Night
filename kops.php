@@ -235,6 +235,7 @@ if ($cmd == "/dev setting up") {
     $new_setting_up_seven->owner = NULL;
     R::store($new_setting_up_seven);
     $vk->sendMessage($id, "%fn% комнаты настроены!");
+    exit();
 }
 
 
@@ -253,8 +254,55 @@ if (isset($data->object->payload)) {
 
     $payload = $payload['command'];
 
-/*if ($payload == "create_game) {
-    if ()
-}*/
+if ($payload == "create_game) {
+    $room = R::findOne("roomsettings", "ready = ?", ["yes"]);
+    if (!$room) {
+        $vk->sendMessage($id, "Все комнаты заняты!\nПопробуйте повторить позже...");
+        exit();
+    } else {
+        $vk->sendMessage($id, "Комната создаётся...");
+        $room->ready = "no";
+        $room->owner = $id;
+            $password = "";
+    function gen_password($length = 6)
+{				
+	$chars = "abcdefghijklmnopqrstuvwxyz1234567890!-_";
+	return substr(str_shuffle($chars), 0, $length);
+}
+ 
+    $gen = gen_password(10);
+    $password = "$id-$gen";
+        $room->uuid = $password
+        R::store($room);
+        $info_done = R::findOne("roomsettings", "uuid = ?", [$password]);
+        $room_idf = $info_done->room_id;
+        if ($room_idf == 1) {
+            $room_text = "roomone";
+        }
+        if ($room_idf == 2) {
+            $room_text = "roomtwo";
+        }
+        if ($room_idf == 3) {
+            $room_text = "roomthree";
+        }
+        if ($room_idf == 4) {
+            $room_text = "roomfour";
+        }
+        if ($room_idf == 5) {
+            $room_text = "roomfive";
+        }
+        if ($room_idf == 6) {
+            $room_text = "roomsix";
+        }
+        if ($room_idf == 7) {
+            $room_text = "roomseven";
+        }
+        $set_room = R::load($room_text, 1);
+        $set_room->user_one = $id;
+        $set_room->room_owner = $id;
+        R::store($set_room)
+        $vk->sendMessage("Комната создана!\n==\nНомер комнаты - $info_done->room_id\nГотовность: Ожидание игроков\nТокен для входа: $info_done->uuid\nМинимальное кол-во игроков: 3\nМаксимальное кол-во игроков: 6\n==");
+    }
+}
     
 
