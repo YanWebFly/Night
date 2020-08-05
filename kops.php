@@ -254,7 +254,7 @@ if (isset($data->object->payload)) {
 
     $payload = $payload['command'];
 
-if ($payload == "create_game) {
+if ($payload == "create_game") {
     $room = R::findOne("roomsettings", "ready = ?", ["yes"]);
     if (!$room) {
         $vk->sendMessage($id, "Все комнаты заняты!\nПопробуйте повторить позже...");
