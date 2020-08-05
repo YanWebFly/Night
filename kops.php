@@ -141,7 +141,7 @@ if ($cmd == "/dev create room") {
     $new_room_five->seeker = NULL;
     R::store($new_room_five);
     $new_room_six = R::dispense('roomsix');
-    $new_room_six->room_id = 5;
+    $new_room_six->room_id = 6;
     $new_room_six->user_one = NULL;
     $new_room_six->user_two = NULL;
     $new_room_six->user_three = NULL;
@@ -163,5 +163,50 @@ if ($cmd == "/dev create room") {
     $new_room_six->room_owner = NULL;
     $new_room_six->seeker = NULL;
     R::store($new_room_six);
+    $new_room_seven = R::dispense('roomseven');
+    $new_room_seven->room_id = 6;
+    $new_room_seven->user_one = NULL;
+    $new_room_seven->user_two = NULL;
+    $new_room_seven->user_three = NULL;
+    $new_room_seven->user_four = NULL;
+    $new_room_seven->user_five = NULL;
+    $new_room_seven->user_six = NULL;
+    $new_room_seven->room_user_one = NULL;
+    $new_room_seven->room_user_two = NULL;
+    $new_room_seven->room_user_three = NULL;
+    $new_room_seven->room_user_four = NULL;
+    $new_room_seven->room_user_five = NULL;
+    $new_room_seven->room_user_six = NULL;
+    $new_room_seven->item_user_one = NULL;
+    $new_room_seven->item_user_two = NULL;
+    $new_room_seven->item_user_three = NULL;
+    $new_room_seven->item_user_four = NULL;
+    $new_room_seven->item_user_five = NULL;
+    $new_room_seven->item_user_six = NULL;
+    $new_room_seven->room_owner = NULL;
+    $new_room_seven->seeker = NULL;
+    R::store($new_room_seven);
     $vk->sendMessage($id, "%fn% комнаты созданы!");
+    
 }
+
+//кнопки
+$cgame = $vk->buttonText("&#11088; Создать игру", "green", ['command' => 'create_game']);
+$crgame = $vk->buttonText("&#128273; Присоединиться к игре", "blue", ['command' => 'join_game']);
+$profile = $vk->buttonText("&#128100; Профиль", "blue", ['command' => 'profile']);
+$shop = $vk->buttonText("&#127978; Магазин", "blue", ['command' => 'shop']);
+$return = $vk->buttonText("&#128281; Вернуться в меню", "red", ['command' => 'return']);
+
+if (isset($data->object->payload)) {
+        $payload = json_decode($data->object->payload, True);
+    } else {
+        $payload = null;
+    }
+
+    $payload = $payload['command'];
+
+/*if ($payload == "create_game) {
+    if ()
+}*/
+    
+
