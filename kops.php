@@ -10,7 +10,7 @@ use DigitalStar\vk_api\Message;
 use DigitalStar\vk_api\VkApiException;
 
 $vk_key = "5b2e2ccf7996cb1bb9e197d6bac403fe7aab0ed25b9d2b4a1b5c50a3d14ec52f5210b97741b9100a5e751";
-$confirm = "770869b8";
+$confirm = "0b22475f";
 $v = "5.103";
 
 $vk = vk_api::create($vk_key, $v)->setConfirm($confirm);
