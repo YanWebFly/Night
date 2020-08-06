@@ -24,7 +24,7 @@ $cmd = mb_strtolower($message, 'utf-8');
 $id = $data->object->message->from_id;
 
 if ($cmd == "/dev create room") {
-    $vk->sendMessage($id, "Идёт создание комнат...");
+    $vk->sendButton($id, "Идёт создание комнат...");
     $new_room_one = R::dispense('roomone');
     $new_room_one->room_id = "1";
     $new_room_one->user_one = NULL;
