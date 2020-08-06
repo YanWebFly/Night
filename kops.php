@@ -246,8 +246,12 @@ $profile = $vk->buttonText("&#128100; Профиль", "blue", ['command' => 'pr
 $shop = $vk->buttonText("&#127978; Магазин", "blue", ['command' => 'shop']);
 $return = $vk->buttonText("&#128281; Вернуться в меню", "red", ['command' => 'return']);
 
-if (isset($data->object->payload)) {
-        $payload = json_decode($data->object->payload, True);
+if ($cmd == "начать") {
+    $vk->sendButton($id, "Вот список кнопок...", [[$cgame],[$crgame],[$profile, $shop],[$return]]);
+}
+
+if (isset($data->object->message->payload)) {
+        $payload = json_decode($data->object->message->payload, True);
     } else {
         $payload = null;
     }
