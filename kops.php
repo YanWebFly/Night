@@ -301,7 +301,7 @@ if ($payload == "create_game") {
         $set_room->user_one = $id;
         $set_room->room_owner = $id;
         R::store($set_room);
-        $vk->sendMessage("Комната создана!\n==\nНомер комнаты - $info_done->room_id\nГотовность: Ожидание игроков\nТокен для входа: $info_done->uuid\nМинимальное кол-во игроков: 3\nМаксимальное кол-во игроков: 6\n==");
+        $vk->sendMessage($id, "Комната создана!\n==\nНомер комнаты - $info_done->room_id\nГотовность: Ожидание игроков\nТокен для входа: $info_done->uuid\nМинимальное кол-во игроков: 3\nМаксимальное кол-во игроков: 6\n==");
     }
 }
     
