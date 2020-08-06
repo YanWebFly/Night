@@ -22,9 +22,12 @@ $vk->sendOK();
 $message = $data->object->message->text;
 $cmd = mb_strtolower($message, 'utf-8');
 $id = $data->object->message->from_id;
+$users_get = R::findOne("users", "user_id = ?", [$id]);
+
+if ($data->type == "message_new") {
 
 if ($cmd == "/dev create room") {
-    $vk->sendButton($id, "Идёт создание комнат...");
+    $vk->sendButton($id, "Идёт создание комнат...", [[]]);
     $new_room_one = R::dispense('roomone');
     $new_room_one->room_id = "1";
     $new_room_one->user_one = NULL;
@@ -305,8 +308,116 @@ if ($payload == "create_game") {
         $set_room->user_one = $id;
         $set_room->room_owner = $id;
         R::store($set_room);
-        $vk->sendMessage($id, "Комната создана!\n==\nНомер комнаты - $info_done->room_id\nГотовность: Ожидание игроков\nТокен для входа: $info_done->uuid\nМинимальное кол-во игроков: 3\nМаксимальное кол-во игроков: 6\n==");
+        $vk->sendButton($id, "Комната создана!\n==\nНомер комнаты - $info_done->room_id\nГотовность: Ожидание игроков\nТокен для входа: $info_done->uuid\nМинимальное кол-во игроков: 3\nМаксимальное кол-во игроков: 6\n==\nАвтор: YnBrk_98", [[]]);
     }
 }
-    
+    if ($payload == "join_game"){
+        if (!$users_get) {
+            $user_new = R::dispense("users");
+            $user_new->user_id = $id;
+            $user_new->score = 0;
+            $user_new->games = 0;
+            $user_new->ready = yes;
+            $user_new->stat = NULL;
+            R::store($user_new);
+        }
+        $users_get->stat = "token";
+        R::store($users_get);
+        $vk->sendButton($id, "Введите токен, чтобы войти в игру:", [[]]);
+    }
+
+    if ($data->type == "message_new") {
+        if ($users_get->stat == "token") {
+            $find_game = R::findOne("roomsettings", "uuid = ?", [$message]);
+            if ($find_game) {
+                if ($find_game->room_id == 1) {
+                    $runa = "roomone";
+                }
+                if ($find_game->room_id == 2) {
+                    $runa = "roomtwo";
+                }
+                if ($find_game->room_id == 3) {
+                    $runa = "roomthree";
+                }
+                if ($find_game->room_id == 4) {
+                    $runa = "roomfour";
+                }
+                if ($find_game->room_id == 5) {
+                    $runa = "roomfive";
+                }
+                if ($find_game->room_id == 6) {
+                    $runa = "roomsix";
+                }
+                if ($find_game->room_id == 7) {
+                    $runa = "roomseven";
+                }
+                if ($find_game->ready == "game") {
+                    $vk->sendMessage($id, "Игра уже началась...");
+                    exit();
+                }
+                //Подключение комнаты
+                $room_set = R::findOne($runa, "room_id = ?", [$find_game->room_id]);
+                if ($room_set) {
+                    if ($room_set->user_one == "") {
+                        $room_set->user_one = $id;
+                    } else {
+                        if ($room_set->user_two == "") {
+                            $room_set->user_two = $id;
+                        } else {
+                            if ($room_set->user_three == "") {
+                                $room_set->user_three = $id;
+                            } else {
+                                if ($room_set->user_four == "") {
+                                    $room_set->user_four = $id;
+                                } else {
+                                    if ($room_set->user_five == "") {
+                                        $room_set->user_five = $id;
+                                    } else {
+                                        if ($room_set->user_six == "") {
+                                            $room_set->user_six = $id;
+                                        } else {
+                                            $vk->sendMessage($id, "Игра заполнена!");
+                                            exit();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                $lola = 0;
+                if ($room_set->user_one != "") {
+                    $lola = $lola + 1;
+                }
+                if ($room_set->user_two != "") {
+                    $lola = $lola + 1;
+                }
+                if ($room_set->user_three != "") {
+                    $lola = $lola + 1;
+                }
+                if ($room_set->user_four != "") {
+                    $lola = $lola + 1;
+                }
+                if ($room_set->user_five != "") {
+                    $lola = $lola + 1;
+                }
+                if ($room_set->user_six != "") {
+                    $lola = $lola + 1;
+                }
+                $own = $find_game->owner;
+                $own_name_i = $vk->request("users.get", ["user_ids" => $own]); 
+                $own_fname = $own_name_i[0]['first_name'];
+                $own_lname = $own_name_i[0]['last_name'];
+                $vk->sendButton($id, "Вы вошли в игру!\n==\nНомер комнаты: $find_game->room_id\nСоздатель: @id$own ($own_fname $own_lname)\nКол-во игроков: $lola");
+                $users_get->stat = "wait";
+                R::store($users_get);
+                R::store($room_set);
+                R::store($find_game);
+            } else {
+                $vk->sendMessage($id, "Вы ввели несуществующий токен!");
+            }
+        }
+    }
+}
+exit(); 
 
