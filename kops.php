@@ -272,6 +272,12 @@ if (isset($data->object->message->payload)) {
     }
 
     $payload = $payload['command'];
+	
+		
+    if ($payload == "return") {
+        $users_get->stat = "ready";
+        R::store($users_get);
+    }
 
 if ($payload == "create_game") {
     if ($users_get->ready != yes) {
@@ -456,11 +462,7 @@ if ($payload == "create_game") {
             }
         }
     }
-	
-    if ($payload == "return") {
-        $users_get->stat = "ready";
-        R::store($users_get);
-    }
+
 	
     if ($payload == "close_game") {
         if ($users_get->stat == "wait") {
