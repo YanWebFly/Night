@@ -26,6 +26,17 @@ $users_get = R::findOne("users", "user_id = ?", [$id]);
 
 if ($data->type == "message_new") {
 
+    if (!$users_get) {
+        $user_new = R::dispense("users");
+            $user_new->user_id = $id;
+            $user_new->score = 0;
+            $user_new->games = 0;
+            $user_new->ready = yes;
+            $user_new->stat = NULL;
+            R::store($user_new);
+            exit();
+    }
+
 if ($cmd == "/dev create room") {
     $vk->sendButton($id, "Идёт создание комнат...", [[]]);
     $new_room_one = R::dispense('roomone');
@@ -251,6 +262,7 @@ $return = $vk->buttonText("&#128281; Вернуться в меню", "red", ['c
 
 if ($cmd == "начать") {
     $vk->sendButton($id, "Вот список кнопок...", [[$cgame],[$crgame],[$profile, $shop],[$return]]);
+    exit();
 }
 
 if (isset($data->object->message->payload)) {
@@ -262,6 +274,10 @@ if (isset($data->object->message->payload)) {
     $payload = $payload['command'];
 
 if ($payload == "create_game") {
+    if ($users_get->ready != yes) {
+        $vk->sendMessage($id, "Нельзя выполнять эту команду во время игры!");
+        exit();
+    }
     $room = R::findOne("roomsettings", "ready = ?", ["yes"]);
     if (!$room) {
         $vk->sendMessage($id, "Все комнаты заняты!\nПопробуйте повторить позже...");
@@ -309,9 +325,14 @@ if ($payload == "create_game") {
         $set_room->room_owner = $id;
         R::store($set_room);
         $vk->sendButton($id, "Комната создана!\n==\nНомер комнаты - $info_done->room_id\nГотовность: Ожидание игроков\nТокен для входа: $info_done->uuid\nМинимальное кол-во игроков: 3\nМаксимальное кол-во игроков: 6\n==\nАвтор: YnBrk_98", [[]]);
+        exit();
     }
 }
     if ($payload == "join_game"){
+        if ($users_get->ready != yes) {
+            $vk->sendMessage($id, "Нельзя выполнять эту команду во время игры!");
+            exit();
+        }
         if (!$users_get) {
             $user_new = R::dispense("users");
             $user_new->user_id = $id;
@@ -324,6 +345,7 @@ if ($payload == "create_game") {
         $users_get->stat = "token";
         R::store($users_get);
         $vk->sendButton($id, "Введите токен, чтобы войти в игру:", [[]]);
+        exit();
     }
 
     if ($data->type == "message_new") {
@@ -355,8 +377,16 @@ if ($payload == "create_game") {
                     $vk->sendMessage($id, "Игра уже началась...");
                     exit();
                 }
-                //Подключение комнаты
                 $room_set = R::findOne($runa, "room_id = ?", [$find_game->room_id]);
+
+                //Закрытие дыры
+                if ($room_set->user_one == $id || $room_set->user_two == $id || $room_set->user_three == $id || $room_set->user_four == $id || $room_set->user_five == $id || $room_set->user_six == $id) {
+                    $vk->sendMessage($id, "ERROR!\nНельзя вступить в игру несколько раз!");
+                    exit();
+                }
+
+
+                //Подключение комнаты
                 if ($room_set) {
                     if ($room_set->user_one == "") {
                         $room_set->user_one = $id;
@@ -408,8 +438,14 @@ if ($payload == "create_game") {
                 $own_name_i = $vk->request("users.get", ["user_ids" => $own]); 
                 $own_fname = $own_name_i[0]['first_name'];
                 $own_lname = $own_name_i[0]['last_name'];
-                $vk->sendButton($id, "Вы вошли в игру!\n==\nНомер комнаты: $find_game->room_id\nСоздатель: @id$own ($own_fname $own_lname)\nКол-во игроков: $lola");
+                if ($find_game->owner == $id) {
+                    $vin_close = $vk->buttonText("Выйти из игры", "red", ['command' => 'admin_close']);
+                } else {
+                    $vin_close = $vk->buttonText("Выйти из игры", "red", ['command' => 'close_game']);
+                }
+                $vk->sendButton($id, "Вы вошли в игру!\n==\nНомер комнаты: $find_game->room_id\nСоздатель: @id$own ($own_fname $own_lname)\nКол-во игроков: $lola", [[$vin_close]]);
                 $users_get->stat = "wait";
+                $users_get->ready = "no";
                 R::store($users_get);
                 R::store($room_set);
                 R::store($find_game);
@@ -418,6 +454,120 @@ if ($payload == "create_game") {
             }
         }
     }
+    if ($payload == "close_game") {
+        if ($users_get->stat == "wait") {
+            $find_game = R::findOne("roomsettings", "uuid = ?", [$message]);
+            if ($find_game->room_id == 1) {
+                $runa = "roomone";
+            }
+            if ($find_game->room_id == 2) {
+                $runa = "roomtwo";
+            }
+            if ($find_game->room_id == 3) {
+                $runa = "roomthree";
+            }
+            if ($find_game->room_id == 4) {
+                $runa = "roomfour";
+            }
+            if ($find_game->room_id == 5) {
+                $runa = "roomfive";
+            }
+            if ($find_game->room_id == 6) {
+                $runa = "roomsix";
+            }
+            if ($find_game->room_id == 7) {
+                $runa = "roomseven";
+            }
+            $gu_kill = R::findOne($runa, "room_id = ?", [$find_game->room_id]);
+            if ($gu_kill) {
+                if ($gu_kill->user_one == "") {
+                    $gu_kill->user_one = NULL;
+                } else {
+                    if ($gu_kill->user_two == "") {
+                        $gu_kill->user_two = NULL;
+                    } else {
+                        if ($gu_kill->user_three == "") {
+                            $gu_kill->user_three = NULL;
+                        } else {
+                            if ($gu_kill->user_four == "") {
+                                $gu_kill->user_four = NULL;
+                            } else {
+                                if ($gu_kill->user_five == "") {
+                                    $gu_kill->user_five = NULL;
+                                } else {
+                                    if ($gu_kill->user_six == "") {
+                                        $gu_kill->user_six = NULL;
+                                    }
+                                    $users_get->stat = "ready";
+                                    $users_get->ready = "yes";
+                                    R::store($gu_kill);
+                                    R::store($users_get);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            $vk->sendMessage($id, "Вы не можете сейчас использовать эту команду!");
+        }
+    
+
+    if ($payload == "admin_close") {
+        $users_get->stat = "ready";
+        $users_get->ready = "yes";
+        $find_game = R::findOne("roomsettings", "uuid = ?", [$message]);
+            if ($find_game->room_id == 1) {
+                $runa = "roomone";
+            }
+            if ($find_game->room_id == 2) {
+                $runa = "roomtwo";
+            }
+            if ($find_game->room_id == 3) {
+                $runa = "roomthree";
+            }
+            if ($find_game->room_id == 4) {
+                $runa = "roomfour";
+            }
+            if ($find_game->room_id == 5) {
+                $runa = "roomfive";
+            }
+            if ($find_game->room_id == 6) {
+                $runa = "roomsix";
+            }
+            if ($find_game->room_id == 7) {
+                $runa = "roomseven";
+            }
+            $gu_kill = R::findOne($runa, "room_id = ?", [$find_game->room_id]);
+            $find_game->uuid = NULL;
+            $find_game->ready = yes;
+            $gu_kill->user_one = NULL;
+            $gu_kill->user_two = NULL;
+            $gu_kill->user_three = NULL;
+            $gu_kill->user_four = NULL;
+            $gu_kill->user_five = NULL;
+            $gu_kill->user_six = NULL;
+            $gu_kill->room_user_one = NULL;
+            $gu_kill->room_user_two = NULL;
+            $gu_kill->room_user_three = NULL;
+            $gu_kill->room_user_four = NULL;
+            $gu_kill->room_user_five = NULL;
+            $gu_kill->room_user_six = NULL;
+            $gu_kill->item_user_one = NULL;
+            $gu_kill->item_user_two = NULL;
+            $gu_kill->item_user_three = NULL;
+            $gu_kill->item_user_four = NULL;
+            $gu_kill->item_user_five = NULL;
+            $gu_kill->item_user_six = NULL;
+            $gu_kill->room_owner = NULL;
+            $gu_kill->seeker = NULL;
+            R::store($find_game);
+            R::store($gu_kill);
+            R::store($users_get);
+            $vk->sendButton($id, "Игра удалена!", [[]]);
+            exit();
+        }
 }
 exit(); 
 
