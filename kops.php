@@ -277,6 +277,8 @@ if (isset($data->object->message->payload)) {
     if ($payload == "return") {
         $users_get->stat = "ready";
         R::store($users_get);
+	$vk->sendButton($id, "Вы вернулись в меню!", [[$cgame],[$crgame],[$profile, $shop]]);
+	exit();
     }
 
 if ($payload == "create_game") {
