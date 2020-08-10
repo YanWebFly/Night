@@ -261,7 +261,7 @@ $shop = $vk->buttonText("&#127978; Магазин", "blue", ['command' => 'shop'
 $return = $vk->buttonText("&#128281; Вернуться в меню", "red", ['command' => 'return']);
 
 if ($cmd == "начать") {
-    $vk->sendButton($id, "Вот список кнопок...", [[$cgame],[$crgame],[$profile, $shop],[$return]]);
+    $vk->sendButton($id, "Вот список кнопок...", [[$cgame],[$crgame],[$profile, $shop]]);
     exit();
 }
 
@@ -344,9 +344,11 @@ if ($payload == "create_game") {
         }
         $users_get->stat = "token";
         R::store($users_get);
-        $vk->sendButton($id, "Введите токен, чтобы войти в игру:", [[]]);
+        $vk->sendButton($id, "Введите токен, чтобы войти в игру:", [[$return]]);
         exit();
     }
+	
+
 
     if ($data->type == "message_new") {
         if ($users_get->stat == "token") {
@@ -454,6 +456,12 @@ if ($payload == "create_game") {
             }
         }
     }
+	
+    if ($payload == "return") {
+        $users_get->stat = "ready";
+        R::store($users_get);
+    }
+	
     if ($payload == "close_game") {
         if ($users_get->stat == "wait") {
             $find_game = R::findOne("roomsettings", "uuid = ?", [$message]);
