@@ -508,10 +508,10 @@ if ($payload == "create_game") {
                         }
                     }
                 }
-            }
         } else {
             $vk->sendMessage($id, "Вы не можете сейчас использовать эту команду!");
         }
+    }
     
 
     if ($payload == "admin_close") {
