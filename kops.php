@@ -31,7 +31,7 @@ if ($data->type == "message_new") {
             $user_new->user_id = $id;
             $user_new->score = 0;
             $user_new->games = 0;
-            $user_new->ready = yes;
+            $user_new->ready = "yes";
             $user_new->stat = NULL;
             R::store($user_new);
             exit();
@@ -208,43 +208,43 @@ if ($cmd == "/dev create room") {
 if ($cmd == "/dev setting up") {
     $new_setting_up_one = R::dispense("roomsettings");
     $new_setting_up_one->room_id = 1;
-    $new_setting_up_one->ready = yes;
+    $new_setting_up_one->ready = "yes";
     $new_setting_up_one->uiid = NULL;
     $new_setting_up_one->owner = NULL;
     R::store($new_setting_up_one);
     $new_setting_up_two = R::dispense("roomsettings");
     $new_setting_up_two->room_id = 2;
-    $new_setting_up_two->ready = yes;
+    $new_setting_up_two->ready = "yes";
     $new_setting_up_two->uiid = NULL;
     $new_setting_up_two->owner = NULL;
     R::store($new_setting_up_two);
     $new_setting_up_three = R::dispense("roomsettings");
     $new_setting_up_three->room_id = 3;
-    $new_setting_up_three->ready = yes;
+    $new_setting_up_three->ready = "yes";
     $new_setting_up_three->uiid = NULL;
     $new_setting_up_three->owner = NULL;
     R::store($new_setting_up_three);
     $new_setting_up_four = R::dispense("roomsettings");
     $new_setting_up_four->room_id = 4;
-    $new_setting_up_four->ready = yes;
+    $new_setting_up_four->ready = "yes";
     $new_setting_up_four->uiid = NULL;
     $new_setting_up_four->owner = NULL;
     R::store($new_setting_up_four);
     $new_setting_up_five = R::dispense("roomsettings");
     $new_setting_up_five->room_id = 5;
-    $new_setting_up_five->ready = yes;
+    $new_setting_up_five->ready = "yes";
     $new_setting_up_five->uiid = NULL;
     $new_setting_up_five->owner = NULL;
     R::store($new_setting_up_five);
     $new_setting_up_six = R::dispense("roomsettings");
     $new_setting_up_six->room_id = 6;
-    $new_setting_up_six->ready = yes;
+    $new_setting_up_six->ready = "yes";
     $new_setting_up_six->uiid = NULL;
     $new_setting_up_six->owner = NULL;
     R::store($new_setting_up_six);
     $new_setting_up_seven = R::dispense("roomsettings");
     $new_setting_up_seven->room_id = 7;
-    $new_setting_up_seven->ready = yes;
+    $new_setting_up_seven->ready = "yes";
     $new_setting_up_seven->uiid = NULL;
     $new_setting_up_seven->owner = NULL;
     R::store($new_setting_up_seven);
@@ -282,7 +282,7 @@ if (isset($data->object->message->payload)) {
     }
 
 if ($payload == "create_game") {
-    if ($users_get->ready != yes) {
+    if ($users_get->ready != "yes") {
         $vk->sendMessage($id, "Нельзя выполнять эту команду во время игры!");
         exit();
     }
@@ -333,11 +333,20 @@ if ($payload == "create_game") {
         $set_room->room_owner = $id;
         R::store($set_room);
         $vk->sendButton($id, "Комната создана!\n==\nНомер комнаты - $info_done->room_id\nГотовность: Ожидание игроков\nТокен для входа: $info_done->uuid\nМинимальное кол-во игроков: 3\nМаксимальное кол-во игроков: 6\n==\nАвтор: YnBrk_98", [[]]);
-        exit();
+        $how = 0;
+        $date_now = date("H.i", strtotime("+1 minute"));
+        while ($how == 1) {
+            $date_two = date("H.i");
+            if ($room_ready == "no") {
+                $vk->sendMessage($id, "Прошла одна минута!");
+                $how = 1;
+                exit();
+            }
+        }
     }
 }
     if ($payload == "join_game"){
-        if ($users_get->ready != yes) {
+        if ($users_get->ready != "yes") {
             $vk->sendMessage($id, "Нельзя выполнять эту команду во время игры!");
             exit();
         }
@@ -346,7 +355,7 @@ if ($payload == "create_game") {
             $user_new->user_id = $id;
             $user_new->score = 0;
             $user_new->games = 0;
-            $user_new->ready = yes;
+            $user_new->ready = "yes";
             $user_new->stat = NULL;
             R::store($user_new);
         }
@@ -553,7 +562,7 @@ if ($payload == "create_game") {
             }
             $gu_kill = R::findOne($runa, "room_id = ?", [$find_game->room_id]);
             $find_game->uuid = NULL;
-            $find_game->ready = yes;
+            $find_game->ready = "yes";
             $gu_kill->user_one = NULL;
             $gu_kill->user_two = NULL;
             $gu_kill->user_three = NULL;
