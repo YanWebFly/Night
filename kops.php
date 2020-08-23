@@ -304,8 +304,11 @@ if ($payload == "create_game") {
     $gen = gen_password(10);
     $password = "$id-$gen";
         $room->uuid = $password;
+        $date_min = date("H.i", strtotime("+5 minute"));
+        $room->start_time = $date_min;
         R::store($room);
         $info_done = R::findOne("roomsettings", "uuid = ?", [$password]);
+        
         $room_idf = $info_done->room_id;
         if ($room_idf == 1) {
             $room_text = "roomone";
@@ -333,16 +336,7 @@ if ($payload == "create_game") {
         $set_room->room_owner = $id;
         R::store($set_room);
         $vk->sendButton($id, "Комната создана!\n==\nНомер комнаты - $info_done->room_id\nГотовность: Ожидание игроков\nТокен для входа: $info_done->uuid\nМинимальное кол-во игроков: 3\nМаксимальное кол-во игроков: 6\n==\nАвтор: YnBrk_98", [[]]);
-        $how = 0;
-        $date_now = date("H.i", strtotime("+1 minute"));
-        while ($how == 1) {
-            $date_two = date("H.i");
-            if ($room_ready == "no") {
-                $vk->sendMessage($id, "Прошла одна минута!");
-                $how = 1;
-                exit();
-            }
-        }
+        exit();
     }
 }
     if ($payload == "join_game"){
@@ -538,7 +532,7 @@ if ($payload == "create_game") {
     if ($payload == "admin_close") {
         $users_get->stat = "ready";
         $users_get->ready = "yes";
-        $find_game = R::findOne("roomsettings", "uuid = ?", [$message]);
+        $find_game = R::findOne("roomsettings", "owner = ?", [$id]);
             if ($find_game->room_id == 1) {
                 $runa = "roomone";
             }
@@ -588,6 +582,63 @@ if ($payload == "create_game") {
             R::store($users_get);
             $vk->sendButton($id, "Игра удалена!", [[]]);
             exit();
+        }
+        if ($payload == "start_game") {
+            if ($users_get->ready == "no") {
+                if ($users_get->stat == "wait") {
+                    $non_user = 0;
+                    $find_game = R::findOne("roomsettings", "owner = ?", [$id]);
+            if ($find_game->room_id == 1) {
+                $runa = "roomone";
+            }
+            if ($find_game->room_id == 2) {
+                $runa = "roomtwo";
+            }
+            if ($find_game->room_id == 3) {
+                $runa = "roomthree";
+            }
+            if ($find_game->room_id == 4) {
+                $runa = "roomfour";
+            }
+            if ($find_game->room_id == 5) {
+                $runa = "roomfive";
+            }
+            if ($find_game->room_id == 6) {
+                $runa = "roomsix";
+            }
+            if ($find_game->room_id == 7) {
+                $runa = "roomseven";
+            }
+            $gu_kill = R::findOne($runa, "room_id = ?", [$find_game->room_id]);
+            if ($gu_kill->user_one != "") {
+                $non_user++;
+            }
+            if ($gu_kill->user_two != "") {
+                $non_user++;
+            }
+            if ($gu_kill->user_three != "") {
+                $non_user++;
+            }
+            if ($gu_kill->user_four != "") {
+                $non_user++;
+            }
+            if ($gu_kill->user_five != "") {
+                $non_user++;
+            }
+            if ($gu_kill->user_six != "") {
+                $non_user++;
+            }
+            if ($non_user >= 3) {
+                // Запуск игры (Игровой процесс)
+                $users_get->stat = "in_game";
+                $seen = rand(1, 7);
+                $gu_kill->seeker = $seen;
+                
+            } else {
+                $vk->sendMessage($id, "У вас меньше 3 игроков в комнате!");
+            }
+                }
+            }
         }
 }
 exit(); 
