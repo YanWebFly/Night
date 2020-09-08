@@ -251,6 +251,101 @@ if ($cmd == "/dev setting up") {
     $vk->sendMessage($id, "%fn% комнаты настроены!");
     exit();
 }
+//Настройка Базы данных python
+if ($cmd == "/dev setting up python30 1") {
+$python_free = R::dispense('python_rooms');
+$python_free->room_id_check = 1;
+$python_free->room_ready = "yes";
+$python_free->room_ssid = "10006729";
+$python_free->room_security_code = "09_31_05";
+$python_free->profile_owner = NULL;
+$python_free->access = 0;
+$vk->sendMessage($id, "%fn% python 3.0 базы созданы для комнаты 1!");
+}
+
+if ($cmd == "/dev setting up python30 2") {
+    $python_free = R::dispense('python_rooms');
+    $python_free->room_id_check = 2;
+    $python_free->room_ready = "yes";
+    $python_free->room_ssid = "20009835";
+    $python_free->room_security_code = "86_35_09";
+    $python_free->profile_owner = NULL;
+    $python_free->access = 0;
+    $vk->sendMessage($id, "%fn% python 3.0 базы созданы для комнаты 2!");
+    }
+
+    if ($cmd == "/dev setting up python30 3") {
+        $python_free = R::dispense('python_rooms');
+        $python_free->room_id_check = 3;
+        $python_free->room_ready = "yes";
+        $python_free->room_ssid = "30002402";
+        $python_free->room_security_code = "34_25_95";
+        $python_free->profile_owner = NULL;
+        $python_free->access = 0;
+        $vk->sendMessage($id, "%fn% python 3.0 базы созданы для комнаты 3!");
+        }
+
+        if ($cmd == "/dev setting up python30 4") {
+            $python_free = R::dispense('python_rooms');
+            $python_free->room_id_check = 4;
+            $python_free->room_ready = "yes";
+            $python_free->room_ssid = "40005609";
+            $python_free->room_security_code = "11_09_31";
+            $python_free->profile_owner = NULL;
+            $python_free->access = 0;
+            $vk->sendMessage($id, "%fn% python 3.0 базы созданы для комнаты 4!");
+            }
+
+            if ($cmd == "/dev setting up python30 5") {
+                $python_free = R::dispense('python_rooms');
+                $python_free->room_id_check = 5;
+                $python_free->room_ready = "yes";
+                $python_free->room_ssid = "50006699";
+                $python_free->room_security_code = "99_67_11";
+                $python_free->profile_owner = NULL;
+                $python_free->access = 0;
+                $vk->sendMessage($id, "%fn% python 3.0 базы созданы для комнаты 5!");
+                }
+
+                if ($cmd == "/dev setting up python30 6") {
+                    $python_free = R::dispense('python_rooms');
+                    $python_free->room_id_check = 6;
+                    $python_free->room_ready = "yes";
+                    $python_free->room_ssid = "60004512";
+                    $python_free->room_security_code = "79_11_35";
+                    $python_free->profile_owner = NULL;
+                    $python_free->access = 0;
+                    $vk->sendMessage($id, "%fn% python 3.0 базы созданы для комнаты 6!");
+                    }
+
+                    if ($cmd == "/dev setting up python30 7") {
+                        $python_free = R::dispense('python_rooms');
+                        $python_free->room_id_check = 7;
+                        $python_free->room_ready = "yes";
+                        $python_free->room_ssid = "70000954";
+                        $python_free->room_security_code = "11_29_35";
+                        $python_free->profile_owner = NULL;
+                        $python_free->access = 0;
+                        $vk->sendMessage($id, "%fn% python 3.0 базы созданы для комнаты 7!");
+                        }
+
+                        // Server - AuthGame
+                        if ($cmd == "root python setup") {
+                        $new_server_one = R::dispense('python_server_one');
+                        $new_server_one->ready = "yes";
+                        $new_server_two = R::dispense('python_server_one');
+                        $new_server_two->ready = "yes";
+                        $new_server_three = R::dispense('python_server_one');
+                        $new_server_three->ready = "yes";
+                        $new_server_four = R::dispense('python_server_one');
+                        $new_server_four->ready = "yes";
+                        $new_server_five = R::dispense('python_server_one');
+                        $new_server_five->ready = "yes";
+                        $new_server_six = R::dispense('python_server_one');
+                        $new_server_six->ready = "yes";
+                        $new_server_seven = R::dispense('python_server_one');
+                        $new_server_seven->ready = "yes";
+                        }
 
 
 //кнопки
@@ -259,6 +354,7 @@ $crgame = $vk->buttonText("&#128273; Присоединиться к игре", 
 $profile = $vk->buttonText("&#128100; Профиль", "blue", ['command' => 'profile']);
 $shop = $vk->buttonText("&#127978; Магазин", "blue", ['command' => 'shop']);
 $return = $vk->buttonText("&#128281; Вернуться в меню", "red", ['command' => 'return']);
+$close = $vk->buttonText("Удалить кнопку", "red", ['command' => 'admin_close']);
 
 if ($cmd == "начать") {
     $vk->sendButton($id, "Вот список кнопок...", [[$cgame],[$crgame],[$profile, $shop]]);
@@ -451,11 +547,7 @@ if ($payload == "create_game") {
                 $own_name_i = $vk->request("users.get", ["user_ids" => $own]); 
                 $own_fname = $own_name_i[0]['first_name'];
                 $own_lname = $own_name_i[0]['last_name'];
-                if ($find_game->owner == $id) {
-                    $vin_close = $vk->buttonText("Выйти из игры", "red", ['command' => 'admin_close']);
-                } else {
-                    $vin_close = $vk->buttonText("Выйти из игры", "red", ['command' => 'close_game']);
-                }
+                $vin_close = $vk->buttonText("Выйти из игры", "red", ['command' => 'close_game']);
                 $vk->sendButton($id, "Вы вошли в игру!\n==\nНомер комнаты: $find_game->room_id\nСоздатель: @id$own ($own_fname $own_lname)\nКол-во игроков: $lola", [[$vin_close]]);
                 $users_get->stat = "wait";
                 $users_get->ready = "no";
@@ -640,6 +732,49 @@ if ($payload == "create_game") {
                 }
             }
         }
+        if ($payload == "shop"){
+            $boosts = $vk->buttonText("Бустеры", "blue", ['command' => 'boost']);
+            $vip = $vk->buttonText("VIP", "blue", ['command' => 'vip']);
+            $money = $vk->buttonText("Монетки", "blue", ['command' => 'moneys']);
+            $vk->sendButton($id, "Магазин:", [[$boosts],[$vip],[$money]]);
+        }
+        if ($payload == "boosts") {
+            $bomb_boost = $vk->buttonText("Бомба", "blue", ['command' => "buy_bomb"]);
+            $frozen_boost = $vk->buttonText("Заморозка", "blue", ['command' => "buy_frozen"]);
+            $inv_boost = $vk->buttonText("Невидимость", "blue", ['command' => "buy_inv"]);
+        }
+        if ($payload == "vip") {
+            if ($users_get->ready != "yes") {
+                $vk->sendMessage($id, "Вы не можете выполнить эту команду!");
+            } else {
+                //Покупка VIP
+            }
+            
+        }
+        if ($payload == "moneys") {
+            if ($users_get->ready != "yes") {
+                $vk->sendMessage($id, "Вы не можете выполнить эту команду!");
+            } else {
+             $users_get->stat = "money_give";
+             R::store($user_get);
+             $vk->sendButton($id, "Введите кол-во монеток:");
+             exit();
+            }
+        }
+        if ($users_get->stat == "money_give") {
+            if ($users_get->ready == "yes") {
+            if ($cmd > 0) {
+                $cout = $cmd / 2;
+                $users_get->stat = NULL;
+                R::store($users_get);
+                $vk->sendButton($id, "Для покупки $cmd монет, нажмите на кнопку и оплатите $cout монет!", [[]]);
+            } else {
+                $vk->sendMessage($id, "Введите положительное число!");
+            }
+        } else {
+            $vk->sendMessage($id, "Вы не можете выполнить эту команду!");
+        }
+    }
 }
 exit(); 
 
